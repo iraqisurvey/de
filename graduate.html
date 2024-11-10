@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شهادة تخرج</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="certificate">
+            <h1>شهادة تخرج</h1>
+            <p class="certificate-message">نؤكد بأن الطالب <span id="studentName"></span> قد تخرج من دورة المساح العراقي بنجاح.</p>
+            <p class="certificate-footer">نتمنى له التوفيق والنجاح في مستقبله المهني.</p>
+            <button class="print-button" onclick="window.print()">طباعة الشهادة</button>
+        </div>
+    </div>
+
+    <script>
+        // استخراج اسم الطالب من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentName = urlParams.get("name");
+        document.getElementById("studentName").textContent = studentName || "الطالب";
+    </script>
+</body>
+</html>
