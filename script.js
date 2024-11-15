@@ -1,4 +1,11 @@
-const baseURL = "https://iraqisurvey.github.io/iq/graduate.html"; // رابط GitHub Pages
+// مكتبة لتشفير النصوص
+function hashName(name) {
+    return btoa(name); // تشفير Base64
+}
+
+function validateName(hashedName, originalName) {
+    return hashName(originalName) === hashedName;
+}
 
 function generateAndSaveQRCode() {
     const studentName = document.getElementById("studentName").value.trim();
@@ -6,8 +13,9 @@ function generateAndSaveQRCode() {
         alert("الرجاء إدخال اسم الطالب");
         return;
     }
-    
-    const qrLink = `${baseURL}?name=${encodeURIComponent(studentName)}`;
+
+    const hashedName = hashName(studentName);
+    const qrLink = `https://iraqisurvey.github.io/iq/graduate.html?name=${encodeURIComponent(studentName)}&hash=${hashedName}`;
 
     // توليد رمز QR
     const qrcodeContainer = document.getElementById("qrcode");
@@ -22,7 +30,7 @@ function generateAndSaveQRCode() {
     const downloadLink = document.getElementById("downloadLink");
     downloadLink.href = qrLink;
     downloadLink.style.display = "block";
-    
+
     // إضافة الطالب إلى قائمة الخريجين
     addGraduateToList(studentName, qrLink);
 }

@@ -16,11 +16,91 @@
         </div>
     </div>
 
+    <canvas id="fireworksCanvas"></canvas>
+
     <script>
-        // استخراج اسم الطالب من الرابط
+        // استخراج البيانات من الرابط
         const urlParams = new URLSearchParams(window.location.search);
         const studentName = urlParams.get("name");
-        document.getElementById("studentName").textContent = studentName || "الطالب";
+        const hash = urlParams.get("hash");
+
+        // التحقق من صلاحية الرابط
+        function hashName(name) {
+            return btoa(name);
+        }
+
+        if (!studentName || !hash || hashName(studentName) !== hash) {
+            alert("رابط غير صالح أو تم تزويره!");
+            document.body.innerHTML = "<h1>رابط غير صالح</h1>";
+        } else {
+            document.getElementById("studentName").textContent = studentName;
+        }
+
+        // تشغيل مؤثرات المفرقعات
+        const canvas = document.getElementById("fireworksCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Firework {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = random(2, 4);
+                this.vx = random(-2, 2);
+                this.vy = random(-2, -10);
+                this.alpha = 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= 0.02;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        const fireworks = [];
+
+        function createFireworks() {
+            for (let i = 0; i < 20; i++) {
+                const x = random(0, canvas.width);
+                const y = random(canvas.height / 2, canvas.height);
+                const color = `${Math.floor(random(0, 255))}, ${Math.floor(random(0, 255))}, ${Math.floor(random(0, 255))}`;
+                fireworks.push(new Firework(x, y, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fireworks.forEach((firework, index) => {
+                if (firework.alpha <= 0) {
+                    fireworks.splice(index, 1);
+                } else {
+                    firework.update();
+                    firework.draw();
+                }
+            });
+
+            if (fireworks.length < 100) {
+                createFireworks();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     </script>
 </body>
 </html>
